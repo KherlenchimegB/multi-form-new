@@ -1,115 +1,180 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { useState } from "react";
+import PictureForm from "@/components/PictureForm";
+import NameForm from "@/components/NameForm";
+import InformationForm from "@/components/InformationForm";
 
 export default function Home() {
+  const [activePageNumber, setActivePageNumber] = useState(1);
+  // const [isValidFirstName, setisValidFirstName] = useState(true);
+  // const [isValidLastName, setisValidLastName] = useState(true);
+  // const [isValidUserName, setisValidUserName] = useState(true);
+  const [isValidData, setIsValidData] = useState({
+    isValidFirstName: true,
+    isValidLastName: true,
+    isValidUserName: true,
+    isValidPhoneNumber: true,
+    isValidEmail: true,
+    isValidPassword: true,
+  });
+  const [nameFormData, setNameFormData] = useState({
+    firstName: "",
+    lastName: "",
+    userName: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    picture: "",
+    birthDate: "",
+  });
+
+  const addUser = () => {
+    switch (activePageNumber) {
+      case 1: {
+        if (
+          nameFormData.firstName !== "" &&
+          nameFormData.lastName !== "" &&
+          nameFormData.userName !== ""
+        ) {
+          const newUser = {
+            firstName: nameFormData.firstName,
+            lastName: nameFormData.lastName,
+            userName: nameFormData.userName,
+          };
+          setNameFormData({ ...nameFormData, newUser });
+          if (activePageNumber < 4) {
+            setActivePageNumber(activePageNumber + 1);
+            console.log("activePageNumber", activePageNumber);
+          }
+          setIsValidData((isValidData.isValidFirstName = true));
+          console.log("isValidFirstName", isValidData.isValidFirstName);
+          setIsValidData(isValidData.isValidLastName);
+          setIsValidData(isValidData.isValidUserName);
+        } else {
+          if (nameFormData.firstName !== "") {
+            setIsValidData(!isValidData.isValidFirstName);
+          }
+          if (nameFormData.lastName !== "") {
+            setIsValidData(!isValidData.isValidLastName);
+          }
+          if (nameFormData.userName !== "") {
+            setIsValidData(!isValidData.isValidUserName);
+          }
+        }
+      }
+      case 2:
+        if (
+          validateEmail(nameFormData.email) &&
+          validatePhoneNumber(nameFormData.phoneNumber) &&
+          nameFormData.password === nameFormData.confirmPassword
+        ) {
+          const newUser = {
+            phoneNumber: nameFormData.phoneNumber,
+            email: nameFormData.email,
+            password: nameFormData.password,
+            confirmPassword: nameFormData.confirmPassword,
+          };
+          setNameFormData({ ...nameFormData, newUser });
+          if (activePageNumber < 4) {
+            setActivePageNumber(activePageNumber + 1);
+            console.log("activePageNumber", activePageNumber);
+          }
+          setIsValidData(isValidData.isValidEmail);
+          setIsValidData(isValidData.isValidPhoneNumber);
+          console.log("isValidPhoneNumber", isValidData.isValidPhoneNumber);
+          setIsValidData(isValidData.isValidEmail);
+          setIsValidData(isValidData.isValidPassword);
+        }
+      case 3: {
+        const newUser = {
+          phoneNumber: nameFormData.birthDate,
+          email: nameFormData.picture,
+        };
+        setNameFormData({ ...nameFormData, newUser });
+        if (activePageNumber < 4) {
+          setActivePageNumber(activePageNumber + 1);
+          console.log("activePageNumber", activePageNumber);
+        }
+      }
+
+      default:
+        return;
+    }
+  };
+
+  const back = () => {
+    if (activePageNumber > 1) {
+      setActivePageNumber(activePageNumber - 1);
+      console.log("activePageNumber", activePageNumber);
+    }
+  };
+
+  const validateEmail = (email) => {
+    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+  const validatePhoneNumber = (phonNumber) => {
+    var results = /^\+?\d{8}$/;
+    return results.test(phonNumber);
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      addUser();
+    }
+  };
+
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              pages/index.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className=" flex justify-center items-center min-h-screen gap-16 bg-[#F4F4F4] p-8">
+      <div
+        className={`"w-[480px] border-none rounded-md ${
+          activePageNumber < 4 ? " h-[650px] " : " h-[200px] "
+        } bg-white p-8 gap-auto"`}
+      >
+        <div className=" h-fit gap-2">
+          <img src="./pineLogo.png" alt="logo" className="w-[60px] h-[60px]" />
+          <p className="text-[26px] font-bold text-[#202124]">Join Us! 😎 </p>
+          <p className="text-[#8E8E8E] text-[18px]">
+            {activePageNumber < 4
+              ? "Please provide all current information accurately."
+              : "We have received your submission. Thank you!"}
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        {/* name form */}
+        {activePageNumber === 1 && (
+          <NameForm
+            activePageNumber={activePageNumber}
+            setNameFormData={setNameFormData}
+            handleKeyDown={handleKeyDown}
+            nameFormData={nameFormData}
+            addUser={addUser}
+            isValidFirstName={isValidData.isValidFirstName}
+            isValidLastName={isValidData.isValidLastName}
+            isValidUserName={isValidData.isValidUserName}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+        )}
+        {activePageNumber === 2 && (
+          <InformationForm
+            activePageNumber={activePageNumber}
+            setNameFormData={setNameFormData}
+            handleKeyDown={handleKeyDown}
+            nameFormData={nameFormData}
+            addUser={addUser}
+            back={back}
+            validatePhoneNumber={validatePhoneNumber}
+            validateEmail={validateEmail}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+        )}
+        {activePageNumber === 3 && (
+          <PictureForm
+            activePageNumber={activePageNumber}
+            setNameFormData={setNameFormData}
+            handleKeyDown={handleKeyDown}
+            nameFormData={nameFormData}
+            addUser={addUser}
+            back={back}
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,11 +1,13 @@
+import { ArrowRight } from "lucide-react";
+import SingleForm from "./SingleForm";
 const NameForm = (props) => {
   return (
-    <div className="flex flex-col justify-between items-center max-[424px]] w-full mt-[20px]">
-      <div className="flex flex-col gap-3 w-full">
+    <div className="flex flex-col justify-between items-center h-[418px] w-full mt-[20px] animate-[wiggle_1s_ease-in-out_infinite] ">
+      <div className="flex flex-col w-full gap-3 border-red-400 ">
         <div className="flex flex-col">
           <div className="flex gap-1">
             <span>First name</span>
-            <span className="text-red-600 text-xs">*</span>
+            <span className="text-xs text-red-600">*</span>
           </div>
           <input
             type="text"
@@ -22,18 +24,14 @@ const NameForm = (props) => {
             value={props.nameFormData.firstName}
             className=" w-full border border-[#CBD5E1] rounded-md p-3"
           />
-          <p
-            className={`${
-              props.isValidFirstName ? "invisible" : " visible  text-red-700 "
-            } `}
-          >
-            Нэрээ оруулна уу
-          </p>
+          {props.errorsFirstName && (
+            <p className="text-red-700 ">{props.errorsFirstName}</p>
+          )}
         </div>
         <div className="flex flex-col">
           <div className="flex gap-1">
             <span>Last name</span>
-            <span className="text-red-600 text-xs">*</span>
+            <span className="text-xs text-red-600">*</span>
           </div>
           <input
             type="text"
@@ -50,18 +48,14 @@ const NameForm = (props) => {
             value={props.nameFormData.lastName}
             className=" w-full border border-[#CBD5E1] rounded-md p-3"
           />
-          <p
-            className={`${
-              props.isValidLastName ? "invisible" : " visible  text-red-700 "
-            } `}
-          >
-            Овгоо оруулна уу.
-          </p>
+          {props.errorsLastName && (
+            <p className="text-red-700 ">{props.errorsLastName}</p>
+          )}
         </div>
         <div className="flex flex-col">
           <div className="flex gap-1">
             <span>Username</span>
-            <span className="text-red-600 text-xs">*</span>
+            <span className="text-xs text-red-600">*</span>
           </div>
           <input
             type="text"
@@ -78,21 +72,19 @@ const NameForm = (props) => {
             value={props.nameFormData.userName}
             className=" w-full border border-[#CBD5E1] rounded-md p-3"
           />
-          <p
-            className={`${
-              props.isValidUserName ? "invisible" : " visible  text-red-700 "
-            } `}
-          >
-            Хэрэглэгчийн нэрээ оруулна уу
-          </p>
+          {props.errorsUserName && (
+            <p className="text-red-700 ">{props.errorsUserName}</p>
+          )}
         </div>
       </div>
-      <button
-        className="bg-black p-1 text-white w-2/3 px-1.5 rounded-md"
-        onClick={props.addUser}
-      >
-        Continue {props.activePageNumber}/3
-      </button>
+      <div className="w-full">
+        <button
+          className="flex justify-center w-full p-3 text-white bg-black rounded-md gap-1.5 transition-all duration-300 hover:opacity-80 cursor-pointer"
+          onClick={props.addUser}
+        >
+          Continue {props.activePageNumber} / 3 <ArrowRight />
+        </button>
+      </div>
     </div>
   );
 };
